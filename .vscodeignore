@@ -10,6 +10,9 @@ sample.ftl
 xx.ftl
 install.bat
 update.bat
+build.bat
 git_publish.bat
+publish_marketplace.bat
 prompt.md
 app.md
+how_to_github.md

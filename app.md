@@ -149,6 +149,8 @@ test/grammar.test.js           teste de tokenizare
 package.json                   contributiile catre VS Code si setarile
 sample.ftl                     fisier de proba cu toate cazurile
 install.bat                    instalare de la zero
-update.bat                     recompilare si reinstalare
-git_publish.bat                publicare pe GitHub
+update.bat                     recompilare si reinstalare, fara sa schimbe versiunea
+build.bat                      incrementeaza versiunea, construieste, instaleaza, publica
+git_publish.bat                doar publicarea pe GitHub
+publish_marketplace.bat        publicarea pe VS Code Marketplace
 ```

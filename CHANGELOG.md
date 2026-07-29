@@ -9,7 +9,7 @@
   confundate cu operatori sau generice din JavaScript (`a < b`, `Array<string>`).
   Directivele FreeMarker raman active si acolo.
 - Setare noua `freemarkerAutoClose.closeHtmlTags`.
-- Scripturi: `install.bat`, `update.bat`, `git_publish.bat`.
+- Scripturi: `install.bat`, `update.bat`, `build.bat`, `git_publish.bat`.
 
 ## 0.2.1
 

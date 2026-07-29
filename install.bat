@@ -33,7 +33,7 @@ if errorlevel 1 goto :fail
 echo.
 echo [3/4] Construiesc pachetul .vsix...
 del /q *.vsix >nul 2>&1
-call npx --yes @vscode/vsce package --allow-missing-repository --skip-license
+call npx --yes @vscode/vsce package
 if errorlevel 1 goto :fail
 
 set "VSIX="

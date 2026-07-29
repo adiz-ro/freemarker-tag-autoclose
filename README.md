@@ -166,7 +166,33 @@ panoul **Extensions**.
 Deschide folderul in VS Code si apasa `F5`. Se deschide o fereastra
 **Extension Development Host** cu extensia incarcata. Util cand vrei sa modifici ceva.
 
-## Publicare pe GitHub
+## Lansarea unei versiuni noi
+
+**`build.bat`** face tot lantul dintr-o singura comanda: teste, incrementarea versiunii
+din `package.json`, `.vsix`, instalare in VS Code, commit, push si tag git.
+
+```bash
+build.bat patch "Adaug inchiderea tagurilor HTML"
+```
+
+| Comanda | Efect |
+| --- | --- |
+| `build.bat` | patch, mesaj implicit `Release v0.3.1` |
+| `build.bat patch "mesaj"` | `0.3.0` -> `0.3.1` |
+| `build.bat minor "mesaj"` | `0.3.0` -> `0.4.0` |
+| `build.bat major "mesaj"` | `0.3.0` -> `1.0.0` |
+| `build.bat "mesaj"` | patch, cu mesajul dat |
+
+Testele ruleaza **inainte** de incrementare, deci daca pica, versiunea ramane neatinsa
+si nu se publica nimic. Daca build-ul reuseste dar push-ul esueaza, versiunea noua e
+deja instalata local si poti relua doar publicarea cu `git_publish.bat`.
+
+Fiecare lansare primeste si un tag git, `v0.3.1`, impins pe GitHub.
+
+Foloseste `update.bat` cand vrei doar sa reconstruiesti si sa reinstalezi local, fara
+sa schimbi versiunea si fara sa publici.
+
+## Publicare pe GitHub, separat
 
 Dublu-click pe **`git_publish.bat`**. Ruleaza testele, initializeaza repo-ul daca e
 nevoie, comite si trimite pe `github.com/adiz-ro/freemarker-tag-autoclose`.
@@ -176,6 +202,9 @@ linia `set "VISIBILITY=private"`.
 
 Repo-ul trebuie sa existe pe GitHub inainte, creat gol - fara README, fara `.gitignore`
 si fara licenta. Daca ai instalat utilitarul `gh`, scriptul il creeaza singur.
+
+Ghidul complet - pregatire, instalare `gh`, trecerea din privat in public si ce faci
+cand push-ul esueaza - este in `how_to_github.md`.
 
 Poti da si un mesaj de commit:
 

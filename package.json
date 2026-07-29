@@ -2,22 +2,31 @@
   "name": "freemarker-tag-autoclose",
   "displayName": "FreeMarker Tag Auto-Close & Syntax",
   "description": "Evidentiaza sintaxa FreeMarker + HTML + JavaScript in fisiere .ftl/.ftx si inchide automat directivele in momentul in care tastezi '>'.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "publisher": "adiz",
   "license": "MIT",
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
-    "Programming Languages",
-    "Formatters"
+    "Programming Languages"
   ],
   "keywords": [
     "freemarker",
     "ftl",
-    "auto close",
-    "tag"
+    "ftlh",
+    "template",
+    "auto close tag",
+    "syntax highlighting"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adiz-ro/freemarker-tag-autoclose.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adiz-ro/freemarker-tag-autoclose/issues"
+  },
+  "homepage": "https://github.com/adiz-ro/freemarker-tag-autoclose#readme",
   "activationEvents": [
     "onStartupFinished"
   ],

@@ -10,12 +10,18 @@ set "REPO_NAME=freemarker-tag-autoclose"
 
 rem Conteaza doar daca repo-ul este creat automat cu utilitarul 'gh'.
 rem Pune "public" daca vrei sa fie vizibil pentru oricine.
-set "VISIBILITY=private"
+set "VISIBILITY=public"
 rem ==================================================================
 
 set "REPO_URL=https://github.com/%GH_USER%/%REPO_NAME%.git"
 
-set "MSG=%*"
+rem Cand este apelat din build.bat, mesajul vine prin variabila de mediu, ca sa nu se
+rem incurce ghilimelele. Altfel se ia din argumentele din linia de comanda.
+if defined COMMIT_MSG (
+  set "MSG=%COMMIT_MSG%"
+) else (
+  set "MSG=%*"
+)
 if "%MSG%"=="" set "MSG=Update FreeMarker Tag Auto-Close and Syntax"
 
 echo.
@@ -38,12 +44,16 @@ if not defined GIT_EMAIL (
   goto :fail
 )
 
-echo [1/5] Rulez testele inainte de publicare...
-call npm test
-if errorlevel 1 (
-  echo.
-  echo Testele au picat. Nu public cod stricat.
-  goto :fail
+if "%SKIP_TESTS%"=="1" (
+  echo [1/5] Testele au rulat deja in build.bat, le sar.
+) else (
+  echo [1/5] Rulez testele inainte de publicare...
+  call npm test
+  if errorlevel 1 (
+    echo.
+    echo Testele au picat. Nu public cod stricat.
+    goto :fail
+  )
 )
 
 echo.
@@ -115,9 +125,23 @@ if errorlevel 1 (
   goto :fail
 )
 
+if defined TAG_NAME (
+  echo.
+  echo      Pun tag-ul %TAG_NAME%...
+  git rev-parse -q --verify "refs/tags/%TAG_NAME%" >nul 2>&1
+  if errorlevel 1 (
+    git tag -a "%TAG_NAME%" -m "%TAG_NAME%"
+    git push origin "%TAG_NAME%"
+    if errorlevel 1 echo      ATENTIE: tag-ul a fost creat local, dar push-ul lui a esuat.
+  ) else (
+    echo      Tag-ul %TAG_NAME% exista deja, nu il refac.
+  )
+)
+
 echo.
 echo ===============================================================
 echo  Publicat: https://github.com/%GH_USER%/%REPO_NAME%
+if defined TAG_NAME echo  Versiune:  %TAG_NAME%
 echo ===============================================================
 echo.
 pause
