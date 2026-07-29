@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($n = \\(Get-Command node -ErrorAction SilentlyContinue\\); if \\($n\\) { \"node: \" + $n.Source; node -v }; $p = \\(Get-Command npm -ErrorAction SilentlyContinue\\); if \\($p\\) { \"npm: \" + $p.Source }; $c = \\(Get-Command code -ErrorAction SilentlyContinue\\); if \\($c\\) { \"code: \" + $c.Source })"
+    ]
+  }
+}

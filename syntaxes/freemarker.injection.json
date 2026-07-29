@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "FreeMarker (injectat)",
+  "scopeName": "freemarker.injection",
+  "comment": "Face ca directivele si interpolarile FreeMarker sa fie evidentiate si inauntrul HTML-ului si al JavaScript-ului incorporat: atribute, <script>, <style>.",
+  "injectionSelector": "L:text.html.freemarker -comment.block.freemarker",
+  "patterns": [{ "include": "text.html.freemarker#freemarker" }]
+}

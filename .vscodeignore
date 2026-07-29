@@ -1,0 +1,15 @@
+.vscode/**
+.claude/**
+src/**
+test/**
+node_modules/**
+out/**/*.map
+tsconfig.json
+.gitignore
+sample.ftl
+xx.ftl
+install.bat
+update.bat
+git_publish.bat
+prompt.md
+app.md

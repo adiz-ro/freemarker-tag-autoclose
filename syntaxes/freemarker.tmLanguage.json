@@ -1,0 +1,238 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "FreeMarker",
+  "scopeName": "text.html.freemarker",
+  "patterns": [
+    { "include": "#freemarker" },
+    { "include": "text.html.basic" }
+  ],
+  "repository": {
+    "freemarker": {
+      "patterns": [
+        { "include": "#comment" },
+        { "include": "#close-directive" },
+        { "include": "#open-directive" },
+        { "include": "#close-user-directive" },
+        { "include": "#open-user-directive" },
+        { "include": "#interpolation" },
+        { "include": "#numeric-interpolation" }
+      ]
+    },
+
+    "comment": {
+      "name": "comment.block.freemarker",
+      "begin": "<#--",
+      "end": "-->",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.begin.freemarker" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.comment.end.freemarker" }
+      }
+    },
+
+    "close-directive": {
+      "name": "meta.tag.directive.close.freemarker",
+      "match": "(</)(#)([a-zA-Z_][a-zA-Z0-9_]*)\\s*(>)",
+      "captures": {
+        "1": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "2": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "3": { "name": "keyword.control.directive.freemarker" },
+        "4": { "name": "punctuation.definition.tag.end.freemarker" }
+      }
+    },
+
+    "open-directive": {
+      "name": "meta.tag.directive.freemarker",
+      "begin": "(<)(#)([a-zA-Z_][a-zA-Z0-9_]*)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "2": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "3": { "name": "keyword.control.directive.freemarker" }
+      },
+      "end": "(/?>)",
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.tag.end.freemarker" }
+      },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "close-user-directive": {
+      "name": "meta.tag.user-directive.close.freemarker",
+      "match": "(</)(@)([a-zA-Z_$][a-zA-Z0-9_$]*(?:\\.[a-zA-Z_$][a-zA-Z0-9_$]*)*)?\\s*(>)",
+      "captures": {
+        "1": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "2": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "3": { "name": "entity.name.function.user-directive.freemarker" },
+        "4": { "name": "punctuation.definition.tag.end.freemarker" }
+      }
+    },
+
+    "open-user-directive": {
+      "name": "meta.tag.user-directive.freemarker",
+      "begin": "(<)(@)([a-zA-Z_$][a-zA-Z0-9_$]*(?:\\.[a-zA-Z_$][a-zA-Z0-9_$]*)*)?",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "2": { "name": "punctuation.definition.tag.begin.freemarker" },
+        "3": { "name": "entity.name.function.user-directive.freemarker" }
+      },
+      "end": "(/?>)",
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.tag.end.freemarker" }
+      },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "interpolation": {
+      "name": "meta.interpolation.freemarker",
+      "begin": "\\$\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.embedded.begin.freemarker" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.end.freemarker" }
+      },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "numeric-interpolation": {
+      "name": "meta.interpolation.numeric.freemarker",
+      "begin": "#\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.embedded.begin.freemarker" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.section.embedded.end.freemarker" }
+      },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "expression": {
+      "patterns": [
+        { "include": "#raw-string" },
+        { "include": "#double-string" },
+        { "include": "#single-string" },
+        { "include": "#group" },
+        { "include": "#sequence" },
+        { "include": "#hash" },
+        { "include": "#number" },
+        { "include": "#constant" },
+        { "include": "#builtin" },
+        { "include": "#word-operator" },
+        { "include": "#parameter" },
+        { "include": "#operator" },
+        { "include": "#variable" }
+      ]
+    },
+
+    "raw-string": {
+      "name": "string.quoted.raw.freemarker",
+      "begin": "\\br(\"|')",
+      "end": "\\1",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.freemarker" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.freemarker" }
+      }
+    },
+
+    "double-string": {
+      "name": "string.quoted.double.freemarker",
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.freemarker" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.freemarker" }
+      },
+      "patterns": [
+        { "name": "constant.character.escape.freemarker", "match": "\\\\." },
+        { "include": "#interpolation" }
+      ]
+    },
+
+    "single-string": {
+      "name": "string.quoted.single.freemarker",
+      "begin": "'",
+      "end": "'",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.freemarker" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.freemarker" }
+      },
+      "patterns": [
+        { "name": "constant.character.escape.freemarker", "match": "\\\\." },
+        { "include": "#interpolation" }
+      ]
+    },
+
+    "group": {
+      "comment": "Parantezele consuma un eventual '>' din expresii, ca in <#if (a > b)>.",
+      "begin": "\\(",
+      "end": "\\)",
+      "captures": { "0": { "name": "punctuation.section.group.freemarker" } },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "sequence": {
+      "begin": "\\[",
+      "end": "\\]",
+      "captures": { "0": { "name": "punctuation.section.sequence.freemarker" } },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "hash": {
+      "begin": "\\{",
+      "end": "\\}",
+      "captures": { "0": { "name": "punctuation.section.hash.freemarker" } },
+      "patterns": [{ "include": "#expression" }]
+    },
+
+    "number": {
+      "name": "constant.numeric.freemarker",
+      "match": "\\b\\d+(?:\\.\\d+)?\\b"
+    },
+
+    "constant": {
+      "name": "constant.language.freemarker",
+      "match": "\\b(?:true|false)\\b"
+    },
+
+    "builtin": {
+      "comment": "?upper_case, ?size, ?has_content ... dar nu operatorul '??'",
+      "match": "(\\?)(?!\\?)([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.builtin.freemarker" },
+        "2": { "name": "support.function.builtin.freemarker" }
+      }
+    },
+
+    "word-operator": {
+      "name": "keyword.operator.word.freemarker",
+      "match": "\\b(?:as|in|using|to|step|gt|gte|lt|lte|and|or|not)\\b"
+    },
+
+    "parameter": {
+      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=)(?!=)",
+      "captures": {
+        "1": { "name": "variable.parameter.freemarker" },
+        "2": { "name": "keyword.operator.assignment.freemarker" }
+      }
+    },
+
+    "operator": {
+      "name": "keyword.operator.freemarker",
+      "match": "\\?\\?|==|!=|<=|>=|&&|\\|\\||\\.\\.<|\\.\\.\\.|\\.\\.|->|[+\\-*/%<>=!?:,.]"
+    },
+
+    "variable": {
+      "name": "variable.other.freemarker",
+      "match": "\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+    }
+  }
+}

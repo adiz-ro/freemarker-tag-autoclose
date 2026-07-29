@@ -1,0 +1,157 @@
+{
+  "name": "freemarker-tag-autoclose",
+  "displayName": "FreeMarker Tag Auto-Close & Syntax",
+  "description": "Evidentiaza sintaxa FreeMarker + HTML + JavaScript in fisiere .ftl/.ftx si inchide automat directivele in momentul in care tastezi '>'.",
+  "version": "0.3.0",
+  "publisher": "adiz",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "keywords": [
+    "freemarker",
+    "ftl",
+    "auto close",
+    "tag"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true,
+      "description": "Extensia doar citeste text si insereaza taguri de inchidere; nu executa cod si nu citeste configuratie care poate rula ceva."
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "freemarker-adiz",
+        "aliases": [
+          "FreeMarker - adiz",
+          "freemarker-adiz"
+        ],
+        "extensions": [
+          ".ftl",
+          ".ftx"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "freemarker-adiz",
+        "scopeName": "text.html.freemarker",
+        "path": "./syntaxes/freemarker.tmLanguage.json",
+        "embeddedLanguages": {
+          "text.html": "html",
+          "source.js": "javascript",
+          "source.css": "css"
+        }
+      },
+      {
+        "scopeName": "freemarker.injection",
+        "path": "./syntaxes/freemarker.injection.json",
+        "injectTo": [
+          "text.html.freemarker"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "freemarkerAutoClose.toggle",
+        "title": "Toggle Tag Auto-Close",
+        "category": "FreeMarker"
+      },
+      {
+        "command": "freemarkerAutoClose.showLog",
+        "title": "Show Auto-Close Log",
+        "category": "FreeMarker"
+      }
+    ],
+    "configuration": {
+      "title": "FreeMarker Tag Auto-Close",
+      "properties": {
+        "freemarkerAutoClose.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activeaza inchiderea automata a tagurilor FreeMarker la tastarea caracterului '>'."
+        },
+        "freemarkerAutoClose.fileExtensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "ftl",
+            "ftx"
+          ],
+          "description": "Extensiile de fisier in care se aplica auto-close. Fara punct, fara diferenta de litere mari/mici."
+        },
+        "freemarkerAutoClose.languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Identificatori de limbaj suplimentari pentru care se aplica auto-close, pe langa extensiile de mai sus. Implicit gol, ca sa nu se declanseze in fisiere .html sau .xml obisnuite."
+        },
+        "freemarkerAutoClose.closeDirectives": {
+          "type": "boolean",
+          "default": true,
+          "description": "Inchide directivele standard, de exemplu <#if> -> </#if>."
+        },
+        "freemarkerAutoClose.closeUserDirectives": {
+          "type": "boolean",
+          "default": true,
+          "description": "Inchide apelurile de macro-uri, de exemplu <@my.macro> -> </@my.macro>."
+        },
+        "freemarkerAutoClose.closeHtmlTags": {
+          "type": "boolean",
+          "default": true,
+          "description": "Inchide tagurile HTML obisnuite, de exemplu <div> -> </div>. Elementele fara continut (br, img, input ...) sunt sarite, la fel si tot ce se afla in interiorul unui <script> sau <style>."
+        },
+        "freemarkerAutoClose.extraBlockDirectives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Nume de directive suplimentare (fara '#') care trebuie tratate ca blocuri si inchise automat."
+        },
+        "freemarkerAutoClose.debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Scrie in panoul de output 'FreeMarker Auto-Close' motivul pentru care un tag nu a fost inchis. Util pentru diagnosticare."
+        },
+        "freemarkerAutoClose.ignoredDirectives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Nume de directive sau de taguri HTML care nu trebuie inchise niciodata automat. Exemplu: [\"sep\", \"p\"]."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node --test test/freemarker.test.js test/grammar.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.4.0",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.3.2"
+  }
+}
