@@ -2,7 +2,7 @@
   "name": "freemarker-tag-autoclose",
   "displayName": "FreeMarker Tag Auto-Close & Syntax",
   "description": "Evidentiaza sintaxa FreeMarker + HTML + JavaScript in fisiere .ftl/.ftx si inchide automat directivele in momentul in care tastezi '>'.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "adiz",
   "license": "MIT",
   "engines": {
@@ -58,8 +58,8 @@
         "language": "freemarker-adiz",
         "scopeName": "text.html.freemarker",
         "path": "./syntaxes/freemarker.tmLanguage.json",
+        "comment": "Nu mapam 'text.html', pentru ca este prefix al scope-ului radacina 'text.html.freemarker' si ar marca tot documentul ca HTML - inclusiv comentariile, care ar deveni <!-- --> in loc de <#-- -->.",
         "embeddedLanguages": {
-          "text.html": "html",
           "source.js": "javascript",
           "source.css": "css"
         }

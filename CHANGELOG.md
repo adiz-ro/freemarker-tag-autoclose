@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.2
+
+- Corectat: comentariile se puneau ca in HTML, `<!-- -->`, in loc de `<#-- -->`.
+  Cauza era maparea `"text.html": "html"` din `embeddedLanguages`. Cum `text.html` este
+  prefix al scope-ului radacina `text.html.freemarker`, VS Code marca tot documentul ca
+  HTML incorporat si folosea configuratia de comentarii a HTML-ului peste tot.
+  `<script>` si `<style>` isi pastreaza comentariile lor, prin `source.js` si
+  `source.css`.
+
 ## 0.3.0
 
 - Inchidere automata si pentru tagurile HTML: `<div>` -> `</div>`, inclusiv elemente
