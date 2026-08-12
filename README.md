@@ -80,6 +80,16 @@ Detaliile pe care le trateaza corect:
 Doar in fisiere `.ftl` si `.ftx`. In `.html`, `.xml` sau orice altceva nu se intampla
 nimic, chiar daca fisierul contine taguri FreeMarker.
 
+## Si pentru Notepad++
+
+Aceleasi reguli de sintaxa, portate ca **User Defined Language**, sunt in
+`notepadpp/freemarker.udl.xml`. Copiezi fisierul in
+`%APPDATA%\Notepad++\userDefineLangs\`, repornesti Notepad++ si `.ftl` / `.ftx` se
+coloreaza ca **FreeMarker**, cu folding pe directive si pe tagurile HTML.
+
+Instructiuni complete, ce acopera si ce nu poate face un UDL: `notepadpp/Readme_ro.md`
+(sau `notepadpp/README.md`, aceleasi lucruri in engleza).
+
 ## Setari
 
 | Setare | Implicit | Descriere |
