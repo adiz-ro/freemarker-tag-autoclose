@@ -166,6 +166,52 @@ interes) si comparatie pixel-cu-pixel a culorilor rezultate - nu dedusa doar din
 documentatia formatului UDL, care nu explica tokenizarea sau bug-ul de folding de la
 comentarii.
 
+## 8. Inchiderea automata de taguri a disparut dupa instalarea UDL-ului
+
+**Ce credeam initial.** Ca odata ce UDL-ul coloreaza corect FreeMarker peste HTML,
+utilizatorul recapata automat tot ce avea `.ftl` cand fisierele foloseau lexerul HTML
+nativ - inclusiv inchiderea automata de taguri la tastarea lui `>`, o functie built-in a
+Notepad++ (`Settings -> Preferences -> Auto-Completion -> Auto-Insert -> Close Tags`).
+
+**Ce a iesit.** Utilizatorul a raportat ca inchiderea automata a incetat sa mai
+functioneze in Notepad++, desi in VS Code extensia continua sa mearga normal - deci nu
+era o problema de logica, ci ceva specific instalarii UDL-ului.
+
+**De ce.** Inainte de acest UDL, `.ftl`/`.ftx` erau asociate manual (in
+`stylers.xml`-ul utilizatorului) cu `LexerType name="html"`, adica Notepad++ trata
+fisierele ca HTML nativ - iar functia de inchidere automata e legata strict de lexerele
+native HTML/XML ale editorului, confirmat direct din manualul oficial ("Additionally,
+Auto-Insert supports automatic HTML & XML tag closure... when editing HTML or XML
+files"). Din momentul in care UDL-ul `FreeMarker` a preluat extensiile `ftl`/`ftx`,
+asocierea de limbaj s-a mutat de pe HTML nativ pe UDL, iar Notepad++ nu ofera niciun
+mecanism in formatul UDL 2.1 care sa activeze acea functie pentru un limbaj definit de
+utilizator - e hardcodat in nucleul C++ al editorului, nu configurabil din XML.
+
+**Cai gresite verificate si respinse inainte de solutie.** Doua ipoteze plauzibile la
+prima vedere s-au dovedit gresite dupa verificare directa la sursa, nu doar din rezumate
+de cautare:
+- Plugin-ul **XBrackets Lite** - descris initial (din rezultate de cautare) ca "auto
+  closes brackets and HTML tags", dar README-ul oficial de pe GitHub arata ca face doar
+  perechi **fixe** de caractere/siruri (`(`/`)`, `"`/`"`, sau perechi multi-caracter
+  definite static ca `/* */`) - nu poate insera dinamic `</nume-variabil>` pentru un tag
+  cu nume arbitrar, deci nu acopera macro-uri FreeMarker cu nume libere (`<@ui.button>`).
+- Plugin-ul **HTML Tag**, deja instalat in Notepad++-ul utilizatorului - README-ul lui
+  spune explicit, la sectiunea "To do", ca nu adauga inchidere la tastare pentru ca "Not
+  needed if tag auto-closing is enabled in Notepad++" - adica se bazeaza tot pe aceeasi
+  functie nativa care nu functioneaza cu UDL. Face doar jumping/selectie/renaming de
+  taguri prin scurtaturi de tastatura.
+
+**Ce am facut pana la urma.** Am portat 1:1 logica de decizie din
+`src/freemarker.ts` (`findTagEnd`, `hasAssignment`, `computeClosingTag`, listele
+`BLOCK_DIRECTIVES`/`ASSIGNMENT_DIRECTIVES`/`VOID_ELEMENTS`) intr-un script Python -
+`FreeMarkerAutoClose.py` - pentru plugin-ul **PythonScript**, care ruleaza cod Python la
+evenimentele Scintilla (`SCINTILLANOTIFICATION.CHARADDED`) independent de ce lexer text
+recunoaste Notepad++ pentru fisierul curent. Verificarea de fidelitate a portarii s-a
+facut rulind aceleasi 83 de cazuri din `test/freemarker.test.js` printr-o copie a functiei
+`compute_closing_tag` in Python simplu (fara `Npp`), cu `python test_port.py` - 0 esecuri.
+Nu a fost nevoie de compilator C/C++ (verificat ca nu exista Visual Studio/MSVC/MinGW pe
+masina) - PythonScript e un plugin oficial, instalabil din Plugins Admin, fara build.
+
 ## Cronologia iteratiilor pe fisierul UDL
 
 1. **v1** - taguri ca delimitatori `<# ... >` (abandonat inainte de a fi testat, din
@@ -187,7 +233,11 @@ comentarii.
    afara de `Ctrl+Q` care nu mai insereaza automat `<#-- -->`.
 
 Versiunea instalata efectiv in `%APPDATA%\Notepad++\userDefineLangs\freemarker.udl.xml`
-si publicata in repo la `notepadpp/freemarker.udl.xml` este v6.
+si publicata in repo la `notepad-plus-plus/freemarker.udl.xml` este v6.
+
+La aceasta se adauga, separat de UDL, `notepad-plus-plus/FreeMarkerAutoClose.py` (punctul
+8 de mai sus) - un script PythonScript pentru inchiderea automata de taguri, functie pe
+care niciun UDL nu o poate oferi singur.
 
 ## Rezumat: reguli descoperite despre UDL, nu documentate explicit in interfata
 
@@ -205,3 +255,8 @@ si publicata in repo la `notepadpp/freemarker.udl.xml` este v6.
 - UDL nu are context lexical - orice ambiguitate (cuvant care e si tag si atribut, sau
   care apare si in text normal) trebuie rezolvata manual, alegand un singur castigator,
   nu deductibila automat din pozitia in linie.
+- Functii built-in ale Notepad++ pot fi legate intern de un lexer nativ specific (ex.
+  inchiderea automata de taguri, legata de HTML/XML), fara ca formatul UDL sa expuna vreun
+  atribut care sa le activeze pentru un limbaj definit de utilizator - nu e o omisiune de
+  configurare, e o limitare arhitecturala, verificabila doar citind manualul oficial cu
+  atentie ("when editing HTML or XML files"), nu prin incercare-eroare in XML.

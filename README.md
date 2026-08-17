@@ -83,12 +83,17 @@ nimic, chiar daca fisierul contine taguri FreeMarker.
 ## Si pentru Notepad++
 
 Aceleasi reguli de sintaxa, portate ca **User Defined Language**, sunt in
-`notepadpp/freemarker.udl.xml`. Copiezi fisierul in
+`notepad-plus-plus/freemarker.udl.xml`. Copiezi fisierul in
 `%APPDATA%\Notepad++\userDefineLangs\`, repornesti Notepad++ si `.ftl` / `.ftx` se
-coloreaza ca **FreeMarker**, cu folding pe directive si pe tagurile HTML.
+coloreaza ca **FreeMarker**, cu folding pe directivele FreeMarker.
 
-Instructiuni complete, ce acopera si ce nu poate face un UDL: `notepadpp/Readme_ro.md`
-(sau `notepadpp/README.md`, aceleasi lucruri in engleza).
+Pentru inchiderea automata a tagurilor (ca mai sus, dar in Notepad++) exista si
+`notepad-plus-plus/FreeMarkerAutoClose.py`, un script pentru plugin-ul PythonScript care
+porteaza aceeasi logica din `src/freemarker.ts`.
+
+Instructiuni complete, ce acopera si ce nu poate face un UDL:
+`notepad-plus-plus/Readme_ro.md` (sau `notepad-plus-plus/README.md`, aceleasi lucruri in
+engleza).
 
 ## Setari
 

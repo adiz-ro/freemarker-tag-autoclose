@@ -21,7 +21,7 @@ The quick way, no dialogs:
 Step 2 from a terminal:
 
 ```bash
-copy notepadpp\freemarker.udl.xml "%APPDATA%\Notepad++\userDefineLangs\"
+copy notepad-plus-plus\freemarker.udl.xml "%APPDATA%\Notepad++\userDefineLangs\"
 ```
 
 Through the UI, if you prefer:
@@ -107,6 +107,58 @@ and then any `div`, `table` or `head` appearing in text, in an attribute or in a
 name would open a phantom fold and the levels would drift. FreeMarker folding, which works
 on `#name`, does not have that problem.
 
+## Automatic tag closing
+
+A UDL cannot do this on its own (Notepad++ ties its native tag-closing feature strictly
+to its native HTML/XML lexers, not to UDLs - see point 6 in the limitations section
+below). The fix is `FreeMarkerAutoClose.py`, a script for the **PythonScript** plugin
+that ports [`../src/freemarker.ts`](../src/freemarker.ts) (the same VS Code extension in
+this repo) 1:1 - the same block directives, the same content-less HTML elements, the same
+`<#assign x>` (block) vs `<#assign x=1>` (standalone) rule. Verified against the same 83
+cases from `test/freemarker.test.js`.
+
+### Installation
+
+1. **Plugins -> Plugins Admin...**, check **PythonScript**, **Install**, let Notepad++
+   restart when it asks.
+2. **Plugins -> Python Script -> New Script...**, name it `FreeMarkerAutoClose.py`.
+   Paste the contents of [`FreeMarkerAutoClose.py`](FreeMarkerAutoClose.py) from this
+   folder and save (`Ctrl+S`).
+
+   Or, without dialogs: copy the file directly into
+   `%APPDATA%\Notepad++\plugins\Config\PythonScript\scripts\`.
+3. **Plugins -> Python Script -> Configuration...**, select `FreeMarkerAutoClose.py`
+   from the list, set **Initialisation** to **ATSTARTUP**, **OK**.
+4. Restart Notepad++. The script now starts automatically every time.
+
+To check it works, open `sample.ftl` and type `<#if x>` - `</#if>` should appear
+automatically with the cursor between the tags.
+
+### What it closes
+
+The same rules as the VS Code extension: block directives (`#if`, `#list`, `#macro`,
+`#function`, `#attempt`, `#compress`, `#escape`, `#noescape`, `#noparse`, `#switch`,
+`#outputformat`, `#autoesc`, `#noautoesc`, `#transform`), macro calls (`<@card>`,
+`<@ui.button ...>`), HTML tags other than content-less elements (`br`, `img`, `input`,
+...), and `<#assign` / `<#global` / `<#local` only when they have no assignment. A `>`
+inside an expression (`<#if (a > b)>`, `<#if title == "a>b">`) does not close the tag
+early, and HTML tags are not closed inside `<script>`/`<style>` (FreeMarker directives
+stay active there).
+
+### Limitations compared to the VS Code extension
+
+- Only works in files with the `.ftl` / `.ftx` extension - edit `FILE_EXTENSIONS` at the
+  top of the script if you need others.
+- The options (`CLOSE_DIRECTIVES`, `CLOSE_USER_DIRECTIVES`, `CLOSE_HTML_TAGS`,
+  `EXTRA_BLOCK_DIRECTIVES`, `IGNORED_DIRECTIVES`) are changed directly in the `.py` file,
+  not from a settings menu.
+- Looks for the start of the tag within the last 8000 characters before the cursor
+  (`LOOKBACK` in the script); a tag longer than that, extremely rare in practice, will not
+  be closed.
+- If you split the Notepad++ window (split view), the PythonScript callback is bound to
+  whichever editor view was active when the script loaded; in the second pane you may
+  need to reopen the file once after the script activates.
+
 ## Limitations, up front
 
 UDL is a single-level lexer, not a grammar system like TextMate. That is where the
@@ -144,10 +196,15 @@ In exchange, compared to the HTML lexer you get exactly what this file exists fo
 `<#-- -->` comments are green end to end, `${...}` interpolations are visible, `<@...>`
 macros are no longer "unknown tags", and folding works on FreeMarker directives.
 
-There is no automatic tag closing like in the VS Code extension - Notepad++ cannot do that
-from a UDL. For that you would need the **XML Tools** plugin or
-`Settings -> Preferences -> Auto-Completion`, and neither of them knows FreeMarker
-directives.
+**Automatic tag closing does not work with UDLs.** `Settings -> Preferences ->
+Auto-Completion -> Auto-Insert -> Close Tags` is the native feature that does this, but
+Notepad++ ties it strictly to its native HTML and XML lexers - not to UDLs, no matter how
+they are defined. That is why, before this UDL existed, when `.ftl`/`.ftx` were mapped to
+the native HTML lexer, auto-closing worked; once the extensions move to the `FreeMarker`
+UDL, the native feature stops applying. Plugins like **HTML Tag** do not help either -
+they do tag jumping/selection/renaming, not closing while typing, and rely on the same
+native feature. The fix that actually works is the `FreeMarkerAutoClose.py` script,
+described above in the "Automatic tag closing" section.
 
 ## Customizing
 
